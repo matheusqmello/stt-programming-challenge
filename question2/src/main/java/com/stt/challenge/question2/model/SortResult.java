@@ -1,6 +1,6 @@
 package com.stt.challenge.question2.model;
 
-public class FormattedResult {
+public class SortResult {
     
     private String original;
     private String sorted;

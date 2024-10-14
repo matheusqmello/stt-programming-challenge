@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.stt.challenge.question2.comparator.CustomComparator;
-import com.stt.challenge.question2.model.FormattedResult;
+import com.stt.challenge.question2.model.SortResult;
 
 public class CustomStringSorter {
     
@@ -15,23 +15,21 @@ public class CustomStringSorter {
     private static final Collector<CharSequence, ?, String> PLAINTEXT_COLLECTOR = Collectors.joining();
     private static final Comparator<? super String> CUSTOM_COMPARATOR = new CustomComparator();
     
-    private FormattedResult formattedResult;
-    
-    public FormattedResult sort(String baseString) {
+    public SortResult sort(String baseString) {
         
         String[] array = baseString.split("");
         
-        formattedResult = new FormattedResult();
+        SortResult sortResult = new SortResult();
         
-        formattedResult.setOriginal(getStream(array).collect(BRACKET_COLLECTOR));
-        formattedResult.setSorted(getStream(array).sorted(CUSTOM_COMPARATOR).collect(BRACKET_COLLECTOR));
-        formattedResult.setFinalString(getStream(array).sorted(CUSTOM_COMPARATOR).collect(PLAINTEXT_COLLECTOR));
+        sortResult.setOriginal(getStream(array).collect(BRACKET_COLLECTOR));
+        sortResult.setSorted(getStream(array).sorted(CUSTOM_COMPARATOR).collect(BRACKET_COLLECTOR));
+        sortResult.setFinalString(getStream(array).sorted(CUSTOM_COMPARATOR).collect(PLAINTEXT_COLLECTOR));
 
-        log("Original array: "+formattedResult.getOriginal());
-        log("Sorted array  : "+formattedResult.getSorted());
-        log("Final String  : "+formattedResult.getFinalString());
+        log("Original array: "+sortResult.getOriginal());
+        log("Sorted array  : "+sortResult.getSorted());
+        log("Final String  : "+sortResult.getFinalString());
         
-        return formattedResult;
+        return sortResult;
     }
     
     private Stream<String> getStream(String[] stringArray) {

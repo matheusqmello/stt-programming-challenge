@@ -4,12 +4,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.stt.challenge.question2.model.FormattedResult;
+import com.stt.challenge.question2.model.SortResult;
 
 public class CustomStringSorterTest {
     
     private CustomStringSorter sorterUnderTest;
-    private FormattedResult result;
+    private SortResult result;
 
     private String baseString;
     private String expectedString;
