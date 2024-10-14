@@ -8,3 +8,7 @@
 ### Question 1
 - Run `mvn exec:java` to see the program running;
 - Run `mvn test` to see the test cases running;
+
+### Question 2
+- Run `mvn exec:java` to run the program and follow the steps in cmd line;
+- Run `mvn test` to see the test cases running;
