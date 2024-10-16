@@ -21,12 +21,23 @@ import com.stt.challenge.question3.service.PersonService;
 @Controller
 public class PersonController {
     
-    private static final String ATT_PAGE_TITLE = "pageTitle";
-    private static final String ATT_SUCCESS_MSG = "successMessage";
+    private static final String ATTRIBUTE_PERSON = "person";
+    private static final String ATTRIBUTE_GENDERS = "genders";
+    private static final String ATTRIBUTE_LIST_PERSONS = "listPersons";
+    private static final String ATTRIBUTE_PAGE_TITLE = "pageTitle";
+    private static final String ATTRIBUTE_SUCCESS_MSG = "successMessage";
 
     private static final String TITLE_CREATE = "Create";
     private static final String TITLE_EDIT = "Edit";
 
+    private static final String HTML_CREATE = "createPerson";
+    private static final String HTML_LIST = "listPersons";
+
+    private static final String ENDPOINT_CREATE = "/person";
+    private static final String ENDPOINT_LIST = "/person/list";
+    private static final String ENDPOINT_EDIT = "/person/edit/{id}";
+    private static final String ENDPOINT_DELETE = "/person/delete/{id}";
+    
     @Autowired
     private PersonService personService;
     
@@ -34,84 +45,75 @@ public class PersonController {
     private GenderService genderService;
     
     
-    // PAGES
-    @GetMapping({"/", "/person", "/index", "/home"})
+    // PAGE HANDLING
+    @GetMapping({ENDPOINT_CREATE, "/"})
     public String showCreatePage(Model model) {
-        setAttribute(model, ATT_PAGE_TITLE, TITLE_CREATE);
+        setAttribute(model, ATTRIBUTE_PAGE_TITLE, TITLE_CREATE);
         
         setGenderSelectOptions(model);
         
-        model.addAttribute("person", new Person());
+        setAttribute(model, ATTRIBUTE_PERSON, new Person());
         
-        return "createPerson"; 
+        return HTML_CREATE; 
     }
     
-    @GetMapping("/person/{id}")
+    @GetMapping(ENDPOINT_EDIT)
     public String showUpdatePage(@PathVariable Integer id, Model model) {
-        setAttribute(model, ATT_PAGE_TITLE, TITLE_EDIT);
+        setAttribute(model, ATTRIBUTE_PAGE_TITLE, TITLE_EDIT);
         
         setGenderSelectOptions(model);
         
         Person person = personService.getById(id);
-        model.addAttribute("person",person);
         
-        return "createPerson"; 
+        setAttribute(model, ATTRIBUTE_PERSON, person);
+        
+        return HTML_CREATE; 
     }
     
-    @GetMapping("/persons")
+    @GetMapping(ENDPOINT_LIST)
     public String showListPage(Model model) {
-        
         List<Person> listPersons = personService.getAll();
-        model.addAttribute("listPersons",listPersons);
         
-        log("ListPersons msg: "+model.getAttribute(ATT_SUCCESS_MSG));
+        setAttribute(model, ATTRIBUTE_LIST_PERSONS, listPersons);
         
-        return "listPersons"; 
+        return HTML_LIST; 
     }
     
 
     // ACTIONS
-    @PostMapping("/person")
+    @PostMapping(ENDPOINT_CREATE)
     public String createOrUpdatePerson(@Valid @ModelAttribute Person person, Model model) {
         personService.save(person);
         
         setGenderSelectOptions(model);
+
+        setAttribute(model, ATTRIBUTE_PERSON, person);
+        setAttribute(model, ATTRIBUTE_SUCCESS_MSG, "Done successfully.");
         
-        model.addAttribute("person", person);
-        
-        setAttribute(model, ATT_SUCCESS_MSG, "Done successfully.");
-        
-        return "createPerson";
+        return HTML_CREATE;
     }
 
-    @PostMapping("/person/{id}/delete")
-    public String deletePerson(@PathVariable Integer id, Model model, RedirectAttributes redirModel) {
+    @PostMapping(ENDPOINT_DELETE)
+    public String deletePerson(@PathVariable Integer id, Model model, RedirectAttributes redirAtt) {
         personService.delete(id);
         
-        setAttribute(redirModel, ATT_SUCCESS_MSG, "Deleted successfully.");
+        setAttribute(redirAtt, ATTRIBUTE_SUCCESS_MSG, "Deleted successfully.");
         
-        return "redirect:/persons";
+        return "redirect:"+ENDPOINT_LIST;
     }
     
     
     // AUX METHODS
     private void setGenderSelectOptions(Model model) {
         List<Gender> genders = genderService.getAll();
-        model.addAttribute("genders", genders);
+        setAttribute(model, ATTRIBUTE_GENDERS, genders);
     }
     
     private void setAttribute(Model model, String attribute, Object value) {
         if (model instanceof RedirectAttributes) {
             ((RedirectAttributes) model).addFlashAttribute(attribute, value);
-            log("Redir: "+attribute+": "+value);
         } else {
             model.addAttribute(attribute, value);
-            log("Attrib: "+attribute+": "+value);
         }
-        
-    }
-    
-    private void log(String msg) {
-        System.out.println(msg);
     }
 }

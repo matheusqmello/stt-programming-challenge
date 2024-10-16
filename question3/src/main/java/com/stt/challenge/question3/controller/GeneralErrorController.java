@@ -15,7 +15,9 @@ public class GeneralErrorController implements ErrorController {
     }
 
     private String getErrorMessage(Model model) {
-        return "There was a general error: "+model.getAttribute("error")+" "+model.getAttribute("message");
+        return "There was a general error: " + 
+                model.getAttribute("error") + ": " + 
+                model.getAttribute("message");
     }
 
 }
